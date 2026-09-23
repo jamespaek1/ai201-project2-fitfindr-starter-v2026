@@ -64,3 +64,12 @@ model calls. The empty-wardrobe run also completed and explicitly labeled its
 pairings as suggestions. All three full printed sessions are preserved.
 Twenty-one development tests now pass, including external call spies checking
 actual argument identity, failure stops, budget parsing, and isolated sessions.
+
+## Milestone 6 — write-up and checks
+
+Filled the five required README sections with precise contracts, the implemented
+branch rule and function, unedited CLI/per-tool output, actual AI-use details,
+and the unsupported availability phrasing observed in one caption. Kept the
+Unit 4 starter template and RUNNING.md unchanged. The three custom criteria
+remain explicitly attributed to Codex rather than misrepresented as independently
+student-authored. The repository is being retained for the next unit.

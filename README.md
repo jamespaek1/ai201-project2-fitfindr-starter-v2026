@@ -2,6 +2,8 @@
 
 James Paek · AI201 · Unit 3
 
+Repository for Units 3 and 4: [jamespaek1/ai201-project2-fitfindr-starter-v2026](https://github.com/jamespaek1/ai201-project2-fitfindr-starter-v2026).
+
 Built with Codex assistance. Implementation, specs, and the custom criteria
 were drafted by Codex at the user's request; no independent student authorship
 is claimed. The assignment asks students to author criteria themselves, so the
@@ -82,7 +84,62 @@ conditions; no stretch feature is claimed.
 
 ## Sample Run
 
-**Full agent query:** pending loop implementation at this milestone.
+**Full agent query — actual CLI output**
+
+Produced by `app.py::_ask_one` → `agent.py::run_agent` → the three functions in
+`tools.py`, using `gemini-3.5-flash-lite`. Caching was off; this run made two
+real model calls. The output below is copied without editing from
+[`results/unit3_sample_run.txt`](results/unit3_sample_run.txt).
+
+```text
+$ AI201_CACHE=0 python app.py ask 'vintage graphic tee under $30, size M'
+
+  Found:    Y2K Baby Tee — Butterfly Print — $18.0 on depop
+
+  Outfit:   **Outfit 1: Y2K Streetwear Contrast**
+*   **Top:** Y2K Baby Tee — Butterfly Print (NEW_ITEM)
+*   **Bottoms:** Baggy straight-leg jeans, dark wash (w_001)
+*   **Shoes:** Chunky white sneakers (w_007)
+*   **Accessories:** Black crossbody bag (w_010)
+*   **Style Pairing:** Balance the fitted, cropped silhouette of the butterfly baby tee with high-waisted, baggy straight-leg jeans for an effortless Y2K streetwear look, finished with chunky white sneakers and a minimal black bag.
+
+**Outfit 2: Casual Vintage Mix**
+*   **Top:** Y2K Baby Tee — Butterfly Print (NEW_ITEM)
+*   **Outerwear:** Vintage black denim jacket (w_006)
+*   **Bottoms:** Wide-leg khaki trousers (w_002)
+*   **Shoes:** Chunky white sneakers (w_007)
+*   **Style Pairing:** Layer the cropped graphic baby tee under a slightly cropped vintage black denim jacket, pairing the pink and purple butterfly print with earthy wide-leg khaki trousers and white sneakers for a playful contrast of textures and styles.
+
+  Fit card: Balancing a cropped silhouette with dark wash baggy straight-leg jeans gives off the ultimate effortless Y2K streetwear vibe. This Y2K Baby Tee — Butterfly Print is listed on depop for $18.00 and is such a fun piece to style.
+
+2 model calls this session, 1367 prompt + 321 output tokens
+```
+
+**Session handoff and empty search**
+
+Run `python app.py ask 'vintage graphic tee under $30, size M' --session`
+to print the session after the answer. The recorded uncached run is in
+[`results/unit3_agent_happy.txt`](results/unit3_agent_happy.txt), with its
+extracted JSON in [`results/unit3_session_happy.json`](results/unit3_session_happy.json).
+It selected `lst_002` in three loop iterations. The full listing dictionaries
+in `search_results[0]`, `selected_item`, and both downstream `new_item` inputs
+were compared and are equal, including null brand, size, and price. The fit
+card tool also received exactly the saved `outfit_suggestion` string.
+
+The impossible query `designer ballgown size XXS under $5` printed:
+
+```text
+No listings matched 'designer ballgown' (size: XXS, max price: 5.0). Try broader keywords, another size, or a higher budget.
+```
+
+Its [full printed session](results/unit3_agent_empty.txt) contains one tool call
+(`search_listings`) and one loop iteration. `selected_item`,
+`outfit_suggestion`, and `fit_card` remain `null`; model calls were zero.
+The [empty-wardrobe run](results/unit3_agent_empty_wardrobe.txt) completed all
+three tools and clearly labeled the pairings as suggestions.
+
+These are development observations. Unit 4's five-try acceptance evaluation,
+MCP migration, and before/after report have not been performed.
 
 **Three tools tested separately, before wiring the loop**
 
@@ -128,15 +185,40 @@ This shows the documented partial-keyword behavior; the actual graphic tee
 ranked first.
 
 The environment check passed all 10 checks, including a real model call.
-Twelve offline development tests passed before wiring the loop. Full raw
+Twelve offline development tests passed before wiring the loop; all 21
+tool, parser, and loop tests passed after integration. Run them with
+`python -m unittest discover -s tests -v`. Full raw
 results are in `results/`; setup and source data are unchanged.
 
 ## How I Used AI
 
-This section will record two concrete implementation decisions and actual
-validation evidence as the work occurs. The request was “complete the
-assignment on project unit 3.” Codex is performing the implementation and
-writing; the eventual account will distinguish that from manual student work.
+The user's request was “complete the assignment on project unit 3.” Codex read
+the assignment, drafted the specs and criteria, implemented the code, ran the
+commands, and prepared this account. The two moments below describe that actual
+assisted workflow; they do not claim the user manually wrote or edited code.
+
+**Moment 1 — translating the dataset into a search contract**
+
+- **What was requested:** Complete the three specified tools over the supplied listings. Codex first inspected six whole listings, all size labels, and the wardrobe schema.
+- **What came back:** The data showed `S/M`, `XL (oversized)`, `US 9`, `W30 L30`, and 32 null brands. A plain substring comparison would incorrectly make `L` match `XL` and `S` match `US 9`.
+- **What changed:** Codex replaced the search stub with complete-label size matching, an inclusive price filter, and deterministic token-overlap ranking. The spec was committed first, and tests check the actual records at their price ceilings. No semantic matching or live shopping capability is claimed.
+
+**Moment 2 — checking model variation and state rather than trusting fluent text**
+
+- **What was requested:** The actual `create_fit_card` prompt asks for 2–4 sentences and 30–80 words, the exact title, price, and platform once each, with no invented facts. Codex also implemented the assignment's requirement to pass values through the session.
+- **What came back:** Three real uncached model calls produced different captions for the same tee and outfit; one said “ready to shop,” an unsupported availability implication. The separate end-to-end run returned a caption and a session containing each actual tool input and return.
+- **What changed:** Codex used `AI201_CACHE=0` for evidence runs, added `--session` and input snapshots to make the handoff visible, compared the saved item with both downstream inputs, and recorded the caption issue here. It did not replace the observed output with an idealized answer or claim that three varying captions prove the five-try criterion.
+
+**Criteria assistance:** The course supplies criteria 1–2 and asks students to
+write 3–5 themselves. Codex drafted 3–5 and all five explanations as explicit
+teaching examples, committed before implementation and model samples. That
+assistance is disclosed in `criteria.md`; independent student authorship is not
+claimed. The original targets remain intact for Unit 4.
+
+**Scope and status:** All Unit 3 implementation and README sections are filled,
+with real terminal evidence and more than four milestone commits. No optional
+stretch feature is claimed. The Unit 4 starter sections below are intentionally
+left unchanged for the next assignment; their empty tables are not results.
 
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 
