@@ -1,0 +1,473 @@
+$ AI201_CACHE=0 python app.py ask 'vintage graphic tee under $30, size M' --empty-wardrobe --session
+(running with an empty wardrobe)
+
+  Found:    Y2K Baby Tee — Butterfly Print — $18.0 on depop
+
+  Outfit:   Because no wardrobe items are saved, these are just styling suggestions and you do not own them. 
+
+The Y2K Butterfly Print Baby Tee features a fitted crop length in white, pink, and purple. 
+
+General styling advice: Balance the fitted, cropped silhouette of the baby tee with high-waisted bottoms to highlight the Y2K aesthetic. 
+
+Possible pairings:
+1. Low-rise baggy cargo pants for an authentic Y2K streetwear look.
+2. A pleated denim mini skirt paired with platform sneakers to lean into the vintage 2000s vibe.
+
+  Fit card: Channel total vintage 2000s energy by styling the Y2K Baby Tee — Butterfly Print with a pleated denim mini skirt and platform sneakers. This sweet graphic top is listed on depop for $18.00 and brings the ultimate nostalgic aesthetic to your rotation.
+
+{
+  "query": "vintage graphic tee under $30, size M",
+  "parsed": {
+    "description": "vintage graphic tee",
+    "size": "M",
+    "max_price": 30.0
+  },
+  "search_results": [
+    {
+      "id": "lst_002",
+      "title": "Y2K Baby Tee — Butterfly Print",
+      "description": "Super cute early 2000s baby tee with butterfly graphic. Fitted crop length. Tag says medium but fits like a small.",
+      "category": "tops",
+      "style_tags": [
+        "y2k",
+        "vintage",
+        "graphic tee",
+        "cottagecore"
+      ],
+      "size": "S/M",
+      "condition": "excellent",
+      "price": 18.0,
+      "colors": [
+        "white",
+        "pink",
+        "purple"
+      ],
+      "brand": null,
+      "platform": "depop"
+    },
+    {
+      "id": "lst_017",
+      "title": "Mesh Long-Sleeve Top — Black",
+      "description": "Sheer black mesh long-sleeve. Great for layering under a graphic tee or over a bralette. Stretchy material, fits true to size.",
+      "category": "tops",
+      "style_tags": [
+        "y2k",
+        "grunge",
+        "goth",
+        "layering"
+      ],
+      "size": "S/M",
+      "condition": "excellent",
+      "price": 15.0,
+      "colors": [
+        "black"
+      ],
+      "brand": null,
+      "platform": "depop"
+    },
+    {
+      "id": "lst_013",
+      "title": "90s Silk Slip Dress — Floral, Midi Length",
+      "description": "Delicate 90s slip dress in a muted floral print. Midi length, adjustable straps. Light snag on the side seam — not visible when worn.",
+      "category": "bottoms",
+      "style_tags": [
+        "90s",
+        "vintage",
+        "feminine",
+        "floral",
+        "cottagecore"
+      ],
+      "size": "M",
+      "condition": "good",
+      "price": 30.0,
+      "colors": [
+        "ivory",
+        "dusty pink",
+        "green"
+      ],
+      "brand": null,
+      "platform": "depop"
+    },
+    {
+      "id": "lst_020",
+      "title": "Henley Long Sleeve — Washed Burgundy",
+      "description": "Soft washed henley in a rich burgundy. Three-button placket. Slightly shrunken/cropped fit. 100% cotton.",
+      "category": "tops",
+      "style_tags": [
+        "vintage",
+        "basics",
+        "earth tones",
+        "classic"
+      ],
+      "size": "M",
+      "condition": "excellent",
+      "price": 16.0,
+      "colors": [
+        "burgundy",
+        "wine"
+      ],
+      "brand": null,
+      "platform": "thredUp"
+    },
+    {
+      "id": "lst_024",
+      "title": "Vintage Polo Shirt — Forest Green",
+      "description": "Classic polo in forest green. Short sleeve, ribbed collar. Slightly boxy. The kind of piece that goes with everything.",
+      "category": "tops",
+      "style_tags": [
+        "vintage",
+        "preppy",
+        "classic",
+        "earth tones"
+      ],
+      "size": "M",
+      "condition": "good",
+      "price": 18.0,
+      "colors": [
+        "green",
+        "forest green"
+      ],
+      "brand": "Ralph Lauren",
+      "platform": "thredUp"
+    },
+    {
+      "id": "lst_029",
+      "title": "Silk Button-Down — Sage Green",
+      "description": "Loose silk (feel) button-down in sage green. Long sleeve, can be worn open as a layer or fully buttoned. Very flowy.",
+      "category": "tops",
+      "style_tags": [
+        "vintage",
+        "minimal",
+        "earth tones",
+        "cottagecore"
+      ],
+      "size": "M",
+      "condition": "excellent",
+      "price": 28.0,
+      "colors": [
+        "sage",
+        "green"
+      ],
+      "brand": null,
+      "platform": "depop"
+    },
+    {
+      "id": "lst_030",
+      "title": "Vintage Knit Vest — Argyle Brown/Cream",
+      "description": "Classic argyle knit vest in brown and cream. Fits medium. V-neck. Ideal for the dark academia or preppy vintage aesthetic.",
+      "category": "tops",
+      "style_tags": [
+        "vintage",
+        "preppy",
+        "knitwear",
+        "dark academia",
+        "earth tones"
+      ],
+      "size": "M",
+      "condition": "good",
+      "price": 25.0,
+      "colors": [
+        "brown",
+        "cream",
+        "tan"
+      ],
+      "brand": null,
+      "platform": "thredUp"
+    },
+    {
+      "id": "lst_038",
+      "title": "Denim Vest — Medium Wash, Studded",
+      "description": "Denim vest with silver stud detailing along the collar and pockets. Classic rock-inspired customization. Fits like a medium.",
+      "category": "outerwear",
+      "style_tags": [
+        "grunge",
+        "vintage",
+        "denim",
+        "customized",
+        "rock"
+      ],
+      "size": "M",
+      "condition": "good",
+      "price": 27.0,
+      "colors": [
+        "medium blue"
+      ],
+      "brand": null,
+      "platform": "depop"
+    }
+  ],
+  "selected_item": {
+    "id": "lst_002",
+    "title": "Y2K Baby Tee — Butterfly Print",
+    "description": "Super cute early 2000s baby tee with butterfly graphic. Fitted crop length. Tag says medium but fits like a small.",
+    "category": "tops",
+    "style_tags": [
+      "y2k",
+      "vintage",
+      "graphic tee",
+      "cottagecore"
+    ],
+    "size": "S/M",
+    "condition": "excellent",
+    "price": 18.0,
+    "colors": [
+      "white",
+      "pink",
+      "purple"
+    ],
+    "brand": null,
+    "platform": "depop"
+  },
+  "wardrobe": {
+    "items": []
+  },
+  "outfit_suggestion": "Because no wardrobe items are saved, these are just styling suggestions and you do not own them. \n\nThe Y2K Butterfly Print Baby Tee features a fitted crop length in white, pink, and purple. \n\nGeneral styling advice: Balance the fitted, cropped silhouette of the baby tee with high-waisted bottoms to highlight the Y2K aesthetic. \n\nPossible pairings:\n1. Low-rise baggy cargo pants for an authentic Y2K streetwear look.\n2. A pleated denim mini skirt paired with platform sneakers to lean into the vintage 2000s vibe.",
+  "fit_card": "Channel total vintage 2000s energy by styling the Y2K Baby Tee — Butterfly Print with a pleated denim mini skirt and platform sneakers. This sweet graphic top is listed on depop for $18.00 and brings the ultimate nostalgic aesthetic to your rotation.",
+  "error": null,
+  "tool_calls": [
+    {
+      "tool": "search_listings",
+      "inputs": {
+        "description": "vintage graphic tee",
+        "size": "M",
+        "max_price": 30.0
+      },
+      "returned": [
+        {
+          "id": "lst_002",
+          "title": "Y2K Baby Tee — Butterfly Print",
+          "description": "Super cute early 2000s baby tee with butterfly graphic. Fitted crop length. Tag says medium but fits like a small.",
+          "category": "tops",
+          "style_tags": [
+            "y2k",
+            "vintage",
+            "graphic tee",
+            "cottagecore"
+          ],
+          "size": "S/M",
+          "condition": "excellent",
+          "price": 18.0,
+          "colors": [
+            "white",
+            "pink",
+            "purple"
+          ],
+          "brand": null,
+          "platform": "depop"
+        },
+        {
+          "id": "lst_017",
+          "title": "Mesh Long-Sleeve Top — Black",
+          "description": "Sheer black mesh long-sleeve. Great for layering under a graphic tee or over a bralette. Stretchy material, fits true to size.",
+          "category": "tops",
+          "style_tags": [
+            "y2k",
+            "grunge",
+            "goth",
+            "layering"
+          ],
+          "size": "S/M",
+          "condition": "excellent",
+          "price": 15.0,
+          "colors": [
+            "black"
+          ],
+          "brand": null,
+          "platform": "depop"
+        },
+        {
+          "id": "lst_013",
+          "title": "90s Silk Slip Dress — Floral, Midi Length",
+          "description": "Delicate 90s slip dress in a muted floral print. Midi length, adjustable straps. Light snag on the side seam — not visible when worn.",
+          "category": "bottoms",
+          "style_tags": [
+            "90s",
+            "vintage",
+            "feminine",
+            "floral",
+            "cottagecore"
+          ],
+          "size": "M",
+          "condition": "good",
+          "price": 30.0,
+          "colors": [
+            "ivory",
+            "dusty pink",
+            "green"
+          ],
+          "brand": null,
+          "platform": "depop"
+        },
+        {
+          "id": "lst_020",
+          "title": "Henley Long Sleeve — Washed Burgundy",
+          "description": "Soft washed henley in a rich burgundy. Three-button placket. Slightly shrunken/cropped fit. 100% cotton.",
+          "category": "tops",
+          "style_tags": [
+            "vintage",
+            "basics",
+            "earth tones",
+            "classic"
+          ],
+          "size": "M",
+          "condition": "excellent",
+          "price": 16.0,
+          "colors": [
+            "burgundy",
+            "wine"
+          ],
+          "brand": null,
+          "platform": "thredUp"
+        },
+        {
+          "id": "lst_024",
+          "title": "Vintage Polo Shirt — Forest Green",
+          "description": "Classic polo in forest green. Short sleeve, ribbed collar. Slightly boxy. The kind of piece that goes with everything.",
+          "category": "tops",
+          "style_tags": [
+            "vintage",
+            "preppy",
+            "classic",
+            "earth tones"
+          ],
+          "size": "M",
+          "condition": "good",
+          "price": 18.0,
+          "colors": [
+            "green",
+            "forest green"
+          ],
+          "brand": "Ralph Lauren",
+          "platform": "thredUp"
+        },
+        {
+          "id": "lst_029",
+          "title": "Silk Button-Down — Sage Green",
+          "description": "Loose silk (feel) button-down in sage green. Long sleeve, can be worn open as a layer or fully buttoned. Very flowy.",
+          "category": "tops",
+          "style_tags": [
+            "vintage",
+            "minimal",
+            "earth tones",
+            "cottagecore"
+          ],
+          "size": "M",
+          "condition": "excellent",
+          "price": 28.0,
+          "colors": [
+            "sage",
+            "green"
+          ],
+          "brand": null,
+          "platform": "depop"
+        },
+        {
+          "id": "lst_030",
+          "title": "Vintage Knit Vest — Argyle Brown/Cream",
+          "description": "Classic argyle knit vest in brown and cream. Fits medium. V-neck. Ideal for the dark academia or preppy vintage aesthetic.",
+          "category": "tops",
+          "style_tags": [
+            "vintage",
+            "preppy",
+            "knitwear",
+            "dark academia",
+            "earth tones"
+          ],
+          "size": "M",
+          "condition": "good",
+          "price": 25.0,
+          "colors": [
+            "brown",
+            "cream",
+            "tan"
+          ],
+          "brand": null,
+          "platform": "thredUp"
+        },
+        {
+          "id": "lst_038",
+          "title": "Denim Vest — Medium Wash, Studded",
+          "description": "Denim vest with silver stud detailing along the collar and pockets. Classic rock-inspired customization. Fits like a medium.",
+          "category": "outerwear",
+          "style_tags": [
+            "grunge",
+            "vintage",
+            "denim",
+            "customized",
+            "rock"
+          ],
+          "size": "M",
+          "condition": "good",
+          "price": 27.0,
+          "colors": [
+            "medium blue"
+          ],
+          "brand": null,
+          "platform": "depop"
+        }
+      ]
+    },
+    {
+      "tool": "suggest_outfit",
+      "inputs": {
+        "new_item": {
+          "id": "lst_002",
+          "title": "Y2K Baby Tee — Butterfly Print",
+          "description": "Super cute early 2000s baby tee with butterfly graphic. Fitted crop length. Tag says medium but fits like a small.",
+          "category": "tops",
+          "style_tags": [
+            "y2k",
+            "vintage",
+            "graphic tee",
+            "cottagecore"
+          ],
+          "size": "S/M",
+          "condition": "excellent",
+          "price": 18.0,
+          "colors": [
+            "white",
+            "pink",
+            "purple"
+          ],
+          "brand": null,
+          "platform": "depop"
+        },
+        "wardrobe": {
+          "items": []
+        }
+      },
+      "returned": "Because no wardrobe items are saved, these are just styling suggestions and you do not own them. \n\nThe Y2K Butterfly Print Baby Tee features a fitted crop length in white, pink, and purple. \n\nGeneral styling advice: Balance the fitted, cropped silhouette of the baby tee with high-waisted bottoms to highlight the Y2K aesthetic. \n\nPossible pairings:\n1. Low-rise baggy cargo pants for an authentic Y2K streetwear look.\n2. A pleated denim mini skirt paired with platform sneakers to lean into the vintage 2000s vibe."
+    },
+    {
+      "tool": "create_fit_card",
+      "inputs": {
+        "outfit": "Because no wardrobe items are saved, these are just styling suggestions and you do not own them. \n\nThe Y2K Butterfly Print Baby Tee features a fitted crop length in white, pink, and purple. \n\nGeneral styling advice: Balance the fitted, cropped silhouette of the baby tee with high-waisted bottoms to highlight the Y2K aesthetic. \n\nPossible pairings:\n1. Low-rise baggy cargo pants for an authentic Y2K streetwear look.\n2. A pleated denim mini skirt paired with platform sneakers to lean into the vintage 2000s vibe.",
+        "new_item": {
+          "id": "lst_002",
+          "title": "Y2K Baby Tee — Butterfly Print",
+          "description": "Super cute early 2000s baby tee with butterfly graphic. Fitted crop length. Tag says medium but fits like a small.",
+          "category": "tops",
+          "style_tags": [
+            "y2k",
+            "vintage",
+            "graphic tee",
+            "cottagecore"
+          ],
+          "size": "S/M",
+          "condition": "excellent",
+          "price": 18.0,
+          "colors": [
+            "white",
+            "pink",
+            "purple"
+          ],
+          "brand": null,
+          "platform": "depop"
+        }
+      },
+      "returned": "Channel total vintage 2000s energy by styling the Y2K Baby Tee — Butterfly Print with a pleated denim mini skirt and platform sneakers. This sweet graphic top is listed on depop for $18.00 and brings the ultimate nostalgic aesthetic to your rotation."
+    }
+  ],
+  "iterations": 3
+}
+2 model calls this session, 651 prompt + 177 output tokens

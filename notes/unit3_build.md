@@ -48,3 +48,19 @@ alone is not quality. One says "ready to shop", an unsupported availability
 implication to evaluate in Unit 4. Lexical search also returned a mesh top
 because its description mentions a graphic tee; the actual tee ranks first.
 All observations and raw output are retained rather than cleaned up.
+
+## Milestone 5 — loop and session
+
+Implemented `agent.py::run_agent` as a bounded while loop. Each iteration
+checks the session and chooses search, outfit, or caption; empty search sets an
+actionable message and stops in one iteration. Added `app.py ask --session`
+to print the actual state and tool input/return snapshots.
+
+The uncached matching run completed all three tools in three iterations,
+selected `lst_002`, and made two model calls. Independently compared the full
+selected listing against both downstream tool inputs and the saved search
+result; they match. The empty-search run stopped after one tool and made zero
+model calls. The empty-wardrobe run also completed and explicitly labeled its
+pairings as suggestions. All three full printed sessions are preserved.
+Twenty-one development tests now pass, including external call spies checking
+actual argument identity, failure stops, budget parsing, and isolated sessions.
