@@ -1,161 +1,98 @@
 # FitFindr
 
-> ### 👋 Start here
->
-> **New to this repo? Read [RUNNING.md](RUNNING.md) first** — setup, every
-> command, and what to do when something breaks.
->
-> Once `python test.py` passes:
->
-> ```bash
-> python app.py listings --full -n 6      # read the data (Milestone 1)
-> python app.py fields                    # what you can filter on
-> python app.py ask 'vintage graphic tee under $30'
-> ```
->
-> All three tools are stubs, so that last command will do nothing useful yet.
-> That's the starting position.
->
-> **The rest of this file is your submission.** Fill it in as you go.
+James Paek · AI201 · Unit 3
 
----
+Built with Codex assistance. Implementation, specs, and the custom criteria
+were drafted by Codex at the user's request; no independent student authorship
+is claimed. The assignment asks students to author criteria themselves, so the
+three custom criteria below are explicitly AI-assisted examples for review.
+The specs and criteria are committed before implementation and model samples.
 
-<!-- ─────────────────────────────────────────────────────────────────────────
-     HOW TO USE THIS FILE
-
-     This is your submission. Fill each section in as you finish the milestone
-     it belongs to — don't leave it all to the end.
-
-     Unit 3 asks for the first five sections. Unit 4 adds the five below them.
-     Leave the unit 4 sections alone until then; they're here so you know
-     what's coming.
-
-     Everything is pasted as TEXT. No screenshots, no images, no video links.
-     A typed block of output gets full credit; a picture of the same output
-     gets none.
-     ───────────────────────────────────────────────────────────────────────── -->
-
-<!-- ═══════════════════════ UNIT 3 — THE BUILD ═══════════════════════ -->
+Setup and every starter command: [RUNNING.md](RUNNING.md), unchanged.
+Use Python 3.11–3.13, install `requirements.txt` in `.venv`, and put your own
+`GEMINI_API_KEY` in the ignored `.env`. Quote queries with single quotes:
+`python app.py ask 'vintage graphic tee under $30, size M'`.
 
 ## What This Does
 
-<!-- Three or four sentences: what a user asks for, and what they get back. -->
-
-
-
----
+FitFindr accepts a thrift-shopping request with keywords and optional size and
+budget, then searches 40 supplied mock listings. It selects the strongest
+keyword match, asks Gemini how to combine it with the supplied wardrobe, and
+asks Gemini for a short fit-card caption. Each result is saved in a session
+before the next tool reads it; an empty search stops with suggestions for
+changing the request. This is a local demonstration using fictional listings,
+not a live marketplace search or a purchase service.
 
 ## Tool Inventory
 
-<!-- Four lines per tool. This is worth 2 points and it's the single most
-     common place students lose them.
-
-     "Returns a list" earns NOTHING. The description has to say what is IN
-     the list.
-
-     The empty case isn't optional either — it's the thing your loop branches
-     on, and if you don't decide it here you'll discover it as a crash in
-     Milestone 5. -->
-
 ### `search_listings`
 
-- **What it does:**
-- **Inputs:** <!-- name and type each: `max_price` (float), not "a price" -->
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** Load the supplied listings through `utils.data_loader.load_listings`, filter size and inclusive price ceiling, and rank by distinct keyword matches.
+- **Inputs:** `description: str`, `size: str | None = None`, `max_price: float | None = None`.
+- **Returns:** Up to `config.SEARCH_RESULT_LIMIT` original listing dicts, each containing `id`, `title`, `description`, `category`, `style_tags: list[str]`, `size`, `condition`, numeric `price`, `colors: list[str]`, nullable `brand`, and `platform`. Case-insensitive word tokens are matched against title, description, category, tags, colors, and non-null brand. Each distinct overlapping keyword counts once; zero-score records are dropped, descending score wins, and ID breaks ties. Common request filler is ignored; a small explicit plural map normalizes tees, jackets, shirts, shoes, sneakers, boots, dresses, and bags. This is lexical matching, not semantic search; partial keyword overlap can return a related item.
+- **When it has nothing:** Return `[]`, including a blank/filler-only description. Invalid negative or non-finite prices raise `ValueError` rather than silently removing the budget.
+
+Size matching is case-insensitive and compares complete labels: `M` matches
+`S/M` and `M/L`, while `L` does not match `XL` and `S` does not match `US 9`.
+Parenthetical fit notes are removed. A numeric shoe query such as `8.5` matches
+`US 8.5`; no conversion between shoe sizing systems is attempted. `W30` matches
+`W30 L30`; a query with both waist and length must match both. `One Size` matches
+one-size labels only; it is not automatically substituted for requested sizes.
 
 ### `suggest_outfit`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** Call the starter's `generate.generate` adapter for one or two combinations using the new item and the supplied wardrobe.
+- **Inputs:** `new_item: dict` (a listing in the shape above), `wardrobe: dict` with `items: list[dict]`. Each wardrobe item has `id`, `name`, `category`, `colors`, `style_tags`, and optional nullable `notes`.
+- **Returns:** A stripped, non-empty `str` describing outfits; the prompt names actual wardrobe pieces and treats null brand as unknown. Listing and wardrobe text are data, not instructions.
+- **When it has nothing:** For `{"items": []}`, still call the model for general styling suggestions, explicitly without claiming the user owns those pieces. A missing new item returns a descriptive message without a model call. Empty model text raises `ModelUnavailable`; provider failures propagate that same adapter exception.
 
 ### `create_fit_card`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
-
----
+- **What it does:** Call the same adapter to turn a supported outfit into a short social caption.
+- **Inputs:** `outfit: str`, `new_item: dict` (the same selected listing).
+- **Returns:** A stripped `str`, prompted to contain 2–4 sentences, 30–80 words, the exact listing title, dollar price, and platform once each, and a concrete outfit/vibe detail. It must not invent a brand, availability, ownership, or purchase. These are output-quality targets, not guaranteed postprocessing.
+- **When it has nothing:** Empty or whitespace-only outfit returns `No fit card: add an outfit suggestion first.` without a model call. Missing item returns a descriptive message. Empty model text raises `ModelUnavailable`, as do provider failures.
 
 ## Planning Loop
 
-<!-- Your branch rule, stated as a rule — the condition AND both paths — plus
-     the file and function that holds it.
+**Branch rule:** If `search_listings` returns `[]`, set an error naming the
+requested filters and suggest broader keywords, another size, or a higher
+budget, then stop before `suggest_outfit`. Otherwise select the first result,
+save it, obtain the outfit suggestion, then create the fit card.
 
-     Like this:
-       "If search_listings returns an empty list, put a message in the session
-        and stop. Otherwise take the first result and go to suggest_outfit."
-        — agent.py::run_agent
+**Where it lives:** `agent.py::run_agent`.
 
-     The grader checks your code against what you claim here, so the file and
-     function have to be real. -->
+**How the query is parsed:** `agent.py::parse_query` uses regular expressions,
+not a model call. Supported budget phrases include `under $30`, `below 30`,
+`up to $30`, `at most $30`, and `max $30`; the ceiling is inclusive. Use an
+explicit `size` phrase for a size, such as `size M`, `size US 8.5`, or
+`size W30 L30`. Missing filters are `None`. Invalid stated budgets and an empty
+description stop with guidance instead of a silently unbounded search.
 
-**Branch rule:**
-
-**Where it lives:** `agent.py::run_agent`
-
-**How the query is parsed:** <!-- regex, string splitting, or asking the model — say which -->
-
-**What moves through the session:** <!-- which fields, in what order -->
-
----
+**What moves through the session:** `query` and `wardrobe` → `parsed` →
+`search_results` → `selected_item` → `outfit_suggestion` → `fit_card`.
+The next action is chosen by a `while` loop after inspecting these fields;
+results are never passed directly from one tool call into another. The session
+also stores `tool_calls` with snapshots of actual inputs and returns so item
+handoff can be checked independently of the final caption. Every iteration
+calls `trace.check_iterations`; `config.MAX_ITERATIONS` bounds the loop.
+Malformed queries and unavailable/empty model output produce an error in the
+returned session, preserving completed stages. These are basic stopping
+conditions; no stretch feature is claimed.
 
 ## Sample Run
 
-<!-- Two things go here.
-
-     1. One FULL query and its output, pasted as text.
-     2. Your three per-tool terminal tests — the command and what it printed. -->
-
-**One full query**
-
-```
-$ python app.py ask '...'
-
-```
-
-**The three tools, tested one at a time**
-
-```
-$ python -c "from tools import search_listings; print(search_listings('graphic tee', max_price=30))"
-
-```
-
-```
-$ python -c "from tools import suggest_outfit; ..."
-
-```
-
-```
-$ python -c "from tools import create_fit_card; ..."
-
-```
-
----
+Implementation and real tool samples are pending at this specification commit.
+They will replace this paragraph after the tools and loop are run. See
+[notes/unit3_build.md](notes/unit3_build.md) for the untouched starter output
+and data inspection.
 
 ## How I Used AI
 
-<!-- Two specific moments. What you asked, what came back, what you changed.
-
-     "I used Claude to help me code" is not enough.
-
-     "I gave Claude my search_listings spec. It returned None on no match
-     instead of an empty list, so I changed it" is the level we want. -->
-
-**Moment 1**
-
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
-
-**Moment 2**
-
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+This section will record two concrete implementation decisions and actual
+validation evidence as the work occurs. The request was “complete the
+assignment on project unit 3.” Codex is performing the implementation and
+writing; the eventual account will distinguish that from manual student work.
 
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 
