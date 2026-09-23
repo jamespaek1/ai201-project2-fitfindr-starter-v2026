@@ -29,3 +29,22 @@ Unit 3 only: specs, five criteria, three tools, bounded planning loop, session
 handoff, CLI, real sample output, and honest AI-use documentation. No Unit 4
 MCP migration or formal five-try before/after evaluation is claimed. No optional
 stretch feature is claimed.
+
+## Milestones 2–4 — specs, criteria, tools
+
+Committed the Tool Inventory and loop rule before tool implementation, then
+committed five acceptance criteria. Criteria 3–5 are disclosed as Codex-drafted
+examples; the two supplied criteria retain their original targets.
+
+Implemented local keyword search with complete size labels and inclusive price
+ceilings. Real data drove the size rules, including shoe decimals and waist
+labels. Both generation tools use the unchanged model adapter. Twelve unit
+tests passed. The environment check passed 10/10 with the existing course key.
+
+Before connecting the loop, ran each tool from its own terminal command,
+produced three uncached captions for the same input, and ran an empty-wardrobe
+sample. The three captions differ but share their opening sentence: variation
+alone is not quality. One says "ready to shop", an unsupported availability
+implication to evaluate in Unit 4. Lexical search also returned a mesh top
+because its description mentions a graphic tee; the actual tee ranks first.
+All observations and raw output are retained rather than cleaned up.

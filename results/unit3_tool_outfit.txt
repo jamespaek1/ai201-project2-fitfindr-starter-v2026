@@ -1,0 +1,11 @@
+$ AI201_CACHE=0 python -c 'from tools import suggest_outfit; from utils.data_loader import get_example_wardrobe, load_listings; print(suggest_outfit(load_listings()[1], get_example_wardrobe())); import generate; print(generate.usage())'
+**Outfit 1: Y2K Streetwear Contrast**
+Pair the Y2K Baby Tee with the Baggy straight-leg jeans, dark wash and Chunky white sneakers. Layer on the Black cropped zip hoodie and complete the look with the Black crossbody bag. 
+
+**Style pairing:** The fitted, cropped silhouette of the butterfly baby tee balances the loose, high-waisted fit of the dark denim, capturing a classic Y2K streetwear vibe. Adding the cropped zip hoodie and chunky sneakers keeps the athletic, nostalgic aesthetic cohesive.
+
+**Outfit 2: Casual Vintage Mix**
+Style the Y2K Baby Tee with the Wide-leg khaki trousers, Vintage black denim jacket, and Black combat boots. 
+
+**Style pairing:** The pink, purple, and white butterfly graphics pop against the neutral earth tones of the wide-leg khaki trousers. Layering the slightly cropped vintage black denim jacket and grounding the outfit with lace-up combat boots adds an edgy grunge contrast to the cute, fitted top.
+1 model calls this session, 814 prompt + 205 output tokens

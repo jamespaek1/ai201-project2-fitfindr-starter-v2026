@@ -1,0 +1,10 @@
+$ AI201_CACHE=0 python -c 'from tools import suggest_outfit; from utils.data_loader import get_empty_wardrobe, load_listings; print(suggest_outfit(load_listings()[1], get_empty_wardrobe())); import generate; print(generate.usage())'
+Because no wardrobe items are saved, these are suggestions, not items you own. 
+
+**General Styling Advice:**
+Lean into the Y2K aesthetic of this white, pink, and purple fitted crop baby tee by balancing the cropped length with high-waisted bottoms. 
+
+**Possible Pairings:**
+*   Pair with low-rise or high-waisted baggy light-wash denim jeans and platform sneakers for a classic 2000s street style look.
+*   Style with a pleated white or pink tennis skirt and chunky sandals to highlight the butterfly graphic and cottagecore elements.
+1 model calls this session, 243 prompt + 122 output tokens

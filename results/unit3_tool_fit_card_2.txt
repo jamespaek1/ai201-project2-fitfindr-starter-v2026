@@ -1,0 +1,3 @@
+$ AI201_CACHE=0 python -c 'from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('"'"'Pair the butterfly tee with dark-wash baggy jeans and chunky white sneakers for a playful Y2K look.'"'"', load_listings()[1])); import generate; print(generate.usage())'
+Pair the Y2K Baby Tee — Butterfly Print with dark-wash baggy jeans and chunky white sneakers for a playful Y2K look. It's listed on depop for $18.00 and brings all the best nostalgic energy.
+1 model calls this session, 305 prompt + 50 output tokens

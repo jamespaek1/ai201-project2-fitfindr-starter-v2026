@@ -1,0 +1,17 @@
+test_caption_receives_item_outfit_and_exact_price (test_tools.PromptTests.test_caption_receives_item_outfit_and_exact_price) ... ok
+test_empty_input_guards_do_not_call_model (test_tools.PromptTests.test_empty_input_guards_do_not_call_model) ... ok
+test_empty_model_output_is_not_success (test_tools.PromptTests.test_empty_model_output_is_not_success) ... ok
+test_empty_wardrobe_still_calls_model_for_general_advice (test_tools.PromptTests.test_empty_wardrobe_still_calls_model_for_general_advice) ... ok
+test_real_wardrobe_and_null_brand_are_preserved (test_tools.PromptTests.test_real_wardrobe_and_null_brand_are_preserved) ... ok
+test_empty_and_impossible_searches (test_tools.SearchTests.test_empty_and_impossible_searches) ... ok
+test_nonfinite_and_negative_prices_are_rejected (test_tools.SearchTests.test_nonfinite_and_negative_prices_are_rejected) ... ok
+test_one_size_is_not_an_apparel_wildcard (test_tools.SearchTests.test_one_size_is_not_an_apparel_wildcard) ... ok
+test_real_listing_at_price_ceiling_and_split_size (test_tools.SearchTests.test_real_listing_at_price_ceiling_and_split_size) ... ok
+test_repeatable_ranking_and_limit (test_tools.SearchTests.test_repeatable_ranking_and_limit) ... ok
+test_shoe_and_waist_sizes (test_tools.SearchTests.test_shoe_and_waist_sizes) ... ok
+test_size_labels_do_not_match_substrings (test_tools.SearchTests.test_size_labels_do_not_match_substrings) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.004s
+
+OK

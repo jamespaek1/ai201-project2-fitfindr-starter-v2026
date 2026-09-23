@@ -1,0 +1,44 @@
+[
+  {
+    "name": "search",
+    "command": "AI201_CACHE=0 python -c 'from tools import search_listings; print(search_listings('\"'\"'graphic tee'\"'\"', size='\"'\"'M'\"'\"', max_price=18)); import generate; print(generate.usage())'",
+    "stdout": "[{'id': 'lst_002', 'title': 'Y2K Baby Tee \u2014 Butterfly Print', 'description': 'Super cute early 2000s baby tee with butterfly graphic. Fitted crop length. Tag says medium but fits like a small.', 'category': 'tops', 'style_tags': ['y2k', 'vintage', 'graphic tee', 'cottagecore'], 'size': 'S/M', 'condition': 'excellent', 'price': 18.0, 'colors': ['white', 'pink', 'purple'], 'brand': None, 'platform': 'depop'}, {'id': 'lst_017', 'title': 'Mesh Long-Sleeve Top \u2014 Black', 'description': 'Sheer black mesh long-sleeve. Great for layering under a graphic tee or over a bralette. Stretchy material, fits true to size.', 'category': 'tops', 'style_tags': ['y2k', 'grunge', 'goth', 'layering'], 'size': 'S/M', 'condition': 'excellent', 'price': 15.0, 'colors': ['black'], 'brand': None, 'platform': 'depop'}]\n0 model calls this session\n",
+    "stderr": "",
+    "returncode": 0
+  },
+  {
+    "name": "outfit",
+    "command": "AI201_CACHE=0 python -c 'from tools import suggest_outfit; from utils.data_loader import get_example_wardrobe, load_listings; print(suggest_outfit(load_listings()[1], get_example_wardrobe())); import generate; print(generate.usage())'",
+    "stdout": "**Outfit 1: Y2K Streetwear Contrast**\nPair the Y2K Baby Tee with the Baggy straight-leg jeans, dark wash and Chunky white sneakers. Layer on the Black cropped zip hoodie and complete the look with the Black crossbody bag. \n\n**Style pairing:** The fitted, cropped silhouette of the butterfly baby tee balances the loose, high-waisted fit of the dark denim, capturing a classic Y2K streetwear vibe. Adding the cropped zip hoodie and chunky sneakers keeps the athletic, nostalgic aesthetic cohesive.\n\n**Outfit 2: Casual Vintage Mix**\nStyle the Y2K Baby Tee with the Wide-leg khaki trousers, Vintage black denim jacket, and Black combat boots. \n\n**Style pairing:** The pink, purple, and white butterfly graphics pop against the neutral earth tones of the wide-leg khaki trousers. Layering the slightly cropped vintage black denim jacket and grounding the outfit with lace-up combat boots adds an edgy grunge contrast to the cute, fitted top.\n1 model calls this session, 814 prompt + 205 output tokens\n",
+    "stderr": "",
+    "returncode": 0
+  },
+  {
+    "name": "fit_card_1",
+    "command": "AI201_CACHE=0 python -c 'from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('\"'\"'Pair the butterfly tee with dark-wash baggy jeans and chunky white sneakers for a playful Y2K look.'\"'\"', load_listings()[1])); import generate; print(generate.usage())'",
+    "stdout": "Pair the Y2K Baby Tee \u2014 Butterfly Print with dark-wash baggy jeans and chunky white sneakers for a playful Y2K look. It is listed on depop for $18.00 and brings all the best early 2000s energy to your wardrobe.\n1 model calls this session, 305 prompt + 58 output tokens\n",
+    "stderr": "",
+    "returncode": 0
+  },
+  {
+    "name": "fit_card_2",
+    "command": "AI201_CACHE=0 python -c 'from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('\"'\"'Pair the butterfly tee with dark-wash baggy jeans and chunky white sneakers for a playful Y2K look.'\"'\"', load_listings()[1])); import generate; print(generate.usage())'",
+    "stdout": "Pair the Y2K Baby Tee \u2014 Butterfly Print with dark-wash baggy jeans and chunky white sneakers for a playful Y2K look. It's listed on depop for $18.00 and brings all the best nostalgic energy.\n1 model calls this session, 305 prompt + 50 output tokens\n",
+    "stderr": "",
+    "returncode": 0
+  },
+  {
+    "name": "fit_card_3",
+    "command": "AI201_CACHE=0 python -c 'from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('\"'\"'Pair the butterfly tee with dark-wash baggy jeans and chunky white sneakers for a playful Y2K look.'\"'\"', load_listings()[1])); import generate; print(generate.usage())'",
+    "stdout": "Pair the Y2K Baby Tee \u2014 Butterfly Print with dark-wash baggy jeans and chunky white sneakers for a playful Y2K look. It's priced at $18.00 and is ready to shop over on depop.\n1 model calls this session, 305 prompt + 49 output tokens\n",
+    "stderr": "",
+    "returncode": 0
+  },
+  {
+    "name": "empty_wardrobe",
+    "command": "AI201_CACHE=0 python -c 'from tools import suggest_outfit; from utils.data_loader import get_empty_wardrobe, load_listings; print(suggest_outfit(load_listings()[1], get_empty_wardrobe())); import generate; print(generate.usage())'",
+    "stdout": "Because no wardrobe items are saved, these are suggestions, not items you own. \n\n**General Styling Advice:**\nLean into the Y2K aesthetic of this white, pink, and purple fitted crop baby tee by balancing the cropped length with high-waisted bottoms. \n\n**Possible Pairings:**\n*   Pair with low-rise or high-waisted baggy light-wash denim jeans and platform sneakers for a classic 2000s street style look.\n*   Style with a pleated white or pink tennis skirt and chunky sandals to highlight the butterfly graphic and cottagecore elements.\n1 model calls this session, 243 prompt + 122 output tokens\n",
+    "stderr": "",
+    "returncode": 0
+  }
+]

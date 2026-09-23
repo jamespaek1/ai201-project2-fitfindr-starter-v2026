@@ -82,10 +82,54 @@ conditions; no stretch feature is claimed.
 
 ## Sample Run
 
-Implementation and real tool samples are pending at this specification commit.
-They will replace this paragraph after the tools and loop are run. See
-[notes/unit3_build.md](notes/unit3_build.md) for the untouched starter output
-and data inspection.
+**Full agent query:** pending loop implementation at this milestone.
+
+**Three tools tested separately, before wiring the loop**
+
+These are actual terminal results, not illustrative outputs. Caching was
+disabled. The two generation tools each made one real Gemini request.
+
+```text
+$ AI201_CACHE=0 python -c 'from tools import search_listings; print(search_listings('"'"'graphic tee'"'"', size='"'"'M'"'"', max_price=18)); import generate; print(generate.usage())'
+[{'id': 'lst_002', 'title': 'Y2K Baby Tee — Butterfly Print', 'description': 'Super cute early 2000s baby tee with butterfly graphic. Fitted crop length. Tag says medium but fits like a small.', 'category': 'tops', 'style_tags': ['y2k', 'vintage', 'graphic tee', 'cottagecore'], 'size': 'S/M', 'condition': 'excellent', 'price': 18.0, 'colors': ['white', 'pink', 'purple'], 'brand': None, 'platform': 'depop'}, {'id': 'lst_017', 'title': 'Mesh Long-Sleeve Top — Black', 'description': 'Sheer black mesh long-sleeve. Great for layering under a graphic tee or over a bralette. Stretchy material, fits true to size.', 'category': 'tops', 'style_tags': ['y2k', 'grunge', 'goth', 'layering'], 'size': 'S/M', 'condition': 'excellent', 'price': 15.0, 'colors': ['black'], 'brand': None, 'platform': 'depop'}]
+0 model calls this session
+```
+
+```text
+$ AI201_CACHE=0 python -c 'from tools import suggest_outfit; from utils.data_loader import get_example_wardrobe, load_listings; print(suggest_outfit(load_listings()[1], get_example_wardrobe())); import generate; print(generate.usage())'
+**Outfit 1: Y2K Streetwear Contrast**
+Pair the Y2K Baby Tee with the Baggy straight-leg jeans, dark wash and Chunky white sneakers. Layer on the Black cropped zip hoodie and complete the look with the Black crossbody bag. 
+
+**Style pairing:** The fitted, cropped silhouette of the butterfly baby tee balances the loose, high-waisted fit of the dark denim, capturing a classic Y2K streetwear vibe. Adding the cropped zip hoodie and chunky sneakers keeps the athletic, nostalgic aesthetic cohesive.
+
+**Outfit 2: Casual Vintage Mix**
+Style the Y2K Baby Tee with the Wide-leg khaki trousers, Vintage black denim jacket, and Black combat boots. 
+
+**Style pairing:** The pink, purple, and white butterfly graphics pop against the neutral earth tones of the wide-leg khaki trousers. Layering the slightly cropped vintage black denim jacket and grounding the outfit with lace-up combat boots adds an edgy grunge contrast to the cute, fitted top.
+1 model calls this session, 814 prompt + 205 output tokens
+```
+
+```text
+$ AI201_CACHE=0 python -c 'from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('"'"'Pair the butterfly tee with dark-wash baggy jeans and chunky white sneakers for a playful Y2K look.'"'"', load_listings()[1])); import generate; print(generate.usage())'
+Pair the Y2K Baby Tee — Butterfly Print with dark-wash baggy jeans and chunky white sneakers for a playful Y2K look. It is listed on depop for $18.00 and brings all the best early 2000s energy to your wardrobe.
+1 model calls this session, 305 prompt + 58 output tokens
+```
+
+The same fit-card input produced three distinct captions at temperature 0.9.
+All three raw outputs are saved in `results/unit3_tool_fit_card_*.txt`. The
+third says "ready to shop", which implies availability the mock record does
+not establish. That is an observed model-quality limitation, not a guarantee
+that criterion 4 passes. No formal five-try evaluation was run.
+
+The empty-wardrobe run returned general suggestions and explicitly said they
+were not owned items; see `results/unit3_tool_empty_wardrobe.txt`. Search also
+returned a mesh top whose description mentions layering under a graphic tee.
+This shows the documented partial-keyword behavior; the actual graphic tee
+ranked first.
+
+The environment check passed all 10 checks, including a real model call.
+Twelve offline development tests passed before wiring the loop. Full raw
+results are in `results/`; setup and source data are unchanged.
 
 ## How I Used AI
 
