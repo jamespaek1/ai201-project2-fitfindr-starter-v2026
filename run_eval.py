@@ -6,7 +6,7 @@ criterion 4's direct fit-card call and criterion 5's five distinct search cases.
 It does not change the agent or decide subjective factual-grounding verdicts.
 """
 import argparse
-from contextlib import redirect_stdout, redirect_stderr
+from contextlib import redirect_stdout
 import datetime as dt
 import hashlib
 import json
@@ -33,9 +33,9 @@ def run_once(scenario, attempt):
     calls = generate.call_count()
     tokens = generate.token_counts()
     started = time.monotonic()
-    # MCP's stdio subprocess requires stderr.fileno(); StringIO breaks it.
-    # Capture to a real temporary file, then preserve that text in the record.
-    with tempfile.TemporaryFile(mode="w+", encoding="utf-8") as capture, redirect_stdout(capture), redirect_stderr(capture):
+    # Keep stderr stable: the SDK binds it when imported and subprocesses need
+    # its descriptor across runs. Provider pacing is in the outer console log.
+    with tempfile.TemporaryFile(mode="w+", encoding="utf-8") as capture, redirect_stdout(capture):
         trace.start_trace()
         try:
             if scenario["kind"] == "agent":
