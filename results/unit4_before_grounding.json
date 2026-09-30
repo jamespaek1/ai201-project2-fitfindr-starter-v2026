@@ -1,0 +1,7 @@
+{
+  "1": {"pass": false, "reason": "'ready to list on depop' invents a seller/listing-readiness claim; the source is an existing mock listing, not an item the user is preparing to sell."},
+  "2": {"pass": true, "reason": "Only the supplied outfit, exact title, price and platform are asserted. Fails separately because it has 28 words."},
+  "3": {"pass": false, "reason": "'Snag this piece' implies availability; 'my Depop shop' and 'more nostalgic finds' invent a seller identity and inventory."},
+  "4": {"pass": true, "reason": "The named pieces and listing facts are supplied. 'brings ... energy to your wardrobe' describes a styling benefit, without saying the user already bought or owns the listing. No invented brand, seller or availability claim."},
+  "5": {"pass": true, "reason": "Only the supplied outfit, exact title, price and platform are asserted. Fails separately because it has 28 words."}
+}

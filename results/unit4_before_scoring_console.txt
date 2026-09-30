@@ -1,0 +1,372 @@
+[
+  {
+    "criterion": 1,
+    "name": "Matching query completes all three tools",
+    "target": 4,
+    "passes": 5,
+    "verdict": "MET",
+    "tries": [
+      {
+        "try": 1,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "no_error": true,
+          "fit_card": true,
+          "tool_order": true
+        }
+      },
+      {
+        "try": 2,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "no_error": true,
+          "fit_card": true,
+          "tool_order": true
+        }
+      },
+      {
+        "try": 3,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "no_error": true,
+          "fit_card": true,
+          "tool_order": true
+        }
+      },
+      {
+        "try": 4,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "no_error": true,
+          "fit_card": true,
+          "tool_order": true
+        }
+      },
+      {
+        "try": 5,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "no_error": true,
+          "fit_card": true,
+          "tool_order": true
+        }
+      }
+    ]
+  },
+  {
+    "criterion": 2,
+    "name": "Impossible query stops before tool 2",
+    "target": 5,
+    "passes": 5,
+    "verdict": "MET",
+    "tries": [
+      {
+        "try": 1,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "tool_order": true,
+          "empty_results": true,
+          "no_downstream_state": true,
+          "actionable": true,
+          "no_model_calls": true
+        }
+      },
+      {
+        "try": 2,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "tool_order": true,
+          "empty_results": true,
+          "no_downstream_state": true,
+          "actionable": true,
+          "no_model_calls": true
+        }
+      },
+      {
+        "try": 3,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "tool_order": true,
+          "empty_results": true,
+          "no_downstream_state": true,
+          "actionable": true,
+          "no_model_calls": true
+        }
+      },
+      {
+        "try": 4,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "tool_order": true,
+          "empty_results": true,
+          "no_downstream_state": true,
+          "actionable": true,
+          "no_model_calls": true
+        }
+      },
+      {
+        "try": 5,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "tool_order": true,
+          "empty_results": true,
+          "no_downstream_state": true,
+          "actionable": true,
+          "no_model_calls": true
+        }
+      }
+    ]
+  },
+  {
+    "criterion": 3,
+    "name": "Selected item reaches both later tools unchanged",
+    "target": 5,
+    "passes": 5,
+    "verdict": "MET",
+    "tries": [
+      {
+        "try": 1,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "both_downstream_calls": true,
+          "full_item_equal": true,
+          "outfit_equal": true
+        }
+      },
+      {
+        "try": 2,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "both_downstream_calls": true,
+          "full_item_equal": true,
+          "outfit_equal": true
+        }
+      },
+      {
+        "try": 3,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "both_downstream_calls": true,
+          "full_item_equal": true,
+          "outfit_equal": true
+        }
+      },
+      {
+        "try": 4,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "both_downstream_calls": true,
+          "full_item_equal": true,
+          "outfit_equal": true
+        }
+      },
+      {
+        "try": 5,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "both_downstream_calls": true,
+          "full_item_equal": true,
+          "outfit_equal": true
+        }
+      }
+    ]
+  },
+  {
+    "criterion": 4,
+    "name": "Fit card is concise and grounded",
+    "target": 4,
+    "passes": 1,
+    "verdict": "MISSED",
+    "tries": [
+      {
+        "try": 1,
+        "pass": false,
+        "checks": {
+          "no_crash": true,
+          "words_30_to_80": true,
+          "sentences_2_to_4": true,
+          "title_once": true,
+          "price_once": true,
+          "platform_once": true,
+          "outfit_piece": true,
+          "reviewed_grounding": false
+        },
+        "words": 31,
+        "sentences": 2,
+        "grounding_review": {
+          "pass": false,
+          "reason": "'ready to list on depop' invents a seller/listing-readiness claim; the source is an existing mock listing, not an item the user is preparing to sell."
+        },
+        "caption": "Pair the Y2K Baby Tee — Butterfly Print with dark-wash baggy jeans and chunky white sneakers for a playful Y2K look. It's priced at $18.00 and ready to list on depop."
+      },
+      {
+        "try": 2,
+        "pass": false,
+        "checks": {
+          "no_crash": true,
+          "words_30_to_80": false,
+          "sentences_2_to_4": true,
+          "title_once": true,
+          "price_once": true,
+          "platform_once": true,
+          "outfit_piece": true,
+          "reviewed_grounding": true
+        },
+        "words": 28,
+        "sentences": 2,
+        "grounding_review": {
+          "pass": true,
+          "reason": "Only the supplied outfit, exact title, price and platform are asserted. Fails separately because it has 28 words."
+        },
+        "caption": "Pair the Y2K Baby Tee — Butterfly Print with dark-wash baggy jeans and chunky white sneakers for a playful Y2K look. It is listed on depop for $18.00."
+      },
+      {
+        "try": 3,
+        "pass": false,
+        "checks": {
+          "no_crash": true,
+          "words_30_to_80": true,
+          "sentences_2_to_4": true,
+          "title_once": true,
+          "price_once": true,
+          "platform_once": true,
+          "outfit_piece": true,
+          "reviewed_grounding": false
+        },
+        "words": 47,
+        "sentences": 3,
+        "grounding_review": {
+          "pass": false,
+          "reason": "'Snag this piece' implies availability; 'my Depop shop' and 'more nostalgic finds' invent a seller identity and inventory."
+        },
+        "caption": "Channeling total early 2000s energy by styling the Y2K Baby Tee — Butterfly Print with dark-wash baggy jeans and chunky white sneakers. It creates such a fun, playful look for everyday wear. Snag this piece for $18.00 and check out my Depop shop for more nostalgic finds!"
+      },
+      {
+        "try": 4,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "words_30_to_80": true,
+          "sentences_2_to_4": true,
+          "title_once": true,
+          "price_once": true,
+          "platform_once": true,
+          "outfit_piece": true,
+          "reviewed_grounding": true
+        },
+        "words": 39,
+        "sentences": 2,
+        "grounding_review": {
+          "pass": true,
+          "reason": "The named pieces and listing facts are supplied. 'brings ... energy to your wardrobe' describes a styling benefit, without saying the user already bought or owns the listing. No invented brand, seller or availability claim."
+        },
+        "caption": "Pair the Y2K Baby Tee — Butterfly Print with dark-wash baggy jeans and chunky white sneakers for a playful Y2K look. It is listed on depop for $18.00 and brings all the best early-2000s nostalgic energy to your wardrobe."
+      },
+      {
+        "try": 5,
+        "pass": false,
+        "checks": {
+          "no_crash": true,
+          "words_30_to_80": false,
+          "sentences_2_to_4": true,
+          "title_once": true,
+          "price_once": true,
+          "platform_once": true,
+          "outfit_piece": true,
+          "reviewed_grounding": true
+        },
+        "words": 28,
+        "sentences": 2,
+        "grounding_review": {
+          "pass": true,
+          "reason": "Only the supplied outfit, exact title, price and platform are asserted. Fails separately because it has 28 words."
+        },
+        "caption": "Pair the Y2K Baby Tee — Butterfly Print with dark-wash baggy jeans and chunky white sneakers for a playful Y2K look. It is listed on depop for $18.00."
+      }
+    ]
+  },
+  {
+    "criterion": 5,
+    "name": "Size and budget survive ranking",
+    "target": 5,
+    "passes": 5,
+    "verdict": "MET",
+    "tries": [
+      {
+        "try": 1,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "expected_present": true,
+          "source_records": true,
+          "within_budget": true,
+          "whole_size_labels": true,
+          "no_model_calls": true
+        }
+      },
+      {
+        "try": 2,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "expected_present": true,
+          "source_records": true,
+          "within_budget": true,
+          "whole_size_labels": true,
+          "no_model_calls": true
+        }
+      },
+      {
+        "try": 3,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "expected_present": true,
+          "source_records": true,
+          "within_budget": true,
+          "whole_size_labels": true,
+          "no_model_calls": true
+        }
+      },
+      {
+        "try": 4,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "expected_present": true,
+          "source_records": true,
+          "within_budget": true,
+          "whole_size_labels": true,
+          "no_model_calls": true
+        }
+      },
+      {
+        "try": 5,
+        "pass": true,
+        "checks": {
+          "no_crash": true,
+          "expected_present": true,
+          "source_records": true,
+          "within_budget": true,
+          "whole_size_labels": true,
+          "no_model_calls": true
+        }
+      }
+    ]
+  }
+]
