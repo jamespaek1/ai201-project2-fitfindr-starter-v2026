@@ -6,7 +6,16 @@ import re
 
 import trace
 from generate import ModelUnavailable
-from tools import search_listings, suggest_outfit, create_fit_card
+from mcp_client import call_tool, MCPError
+from tools import suggest_outfit, create_fit_card
+
+
+def search_listings(description: str, size: str | None = None,
+                    max_price: float | None = None) -> list[dict]:
+    """Keep the existing loop contract, with search transported through MCP."""
+    return call_tool("search_listings", {
+        "description": description, "size": size, "max_price": max_price,
+    })
 
 _PRICE = re.compile(
     r"\b(?:under|below|up\s+to|at\s+most|max(?:imum)?(?:\s+price)?)"
@@ -101,7 +110,7 @@ def run_agent(query: str, wardrobe: dict) -> dict:
                 if not session["fit_card"].strip():
                     session["fit_card"] = None
                     session["error"] = "No fit card was returned. Try the request again."
-        except ModelUnavailable as exc:
+        except (ModelUnavailable, MCPError) as exc:
             session["error"] = str(exc)
     return session
 

@@ -1,0 +1,12 @@
+Asking mcp_server.py what it offers…
+
+  search_listings
+    Search mock thrift listings by keywords, optional complete size label and
+    inclusive maximum price in US dollars; return ranked listing objects, or []
+    when nothing matches. Decimal prices are allowed; negative or nonfinite
+    budgets are rejected. This searches supplied data, not live inventory.
+    
+    - description: string
+    - size: string  (optional)
+    - max_price: number  (optional)
+
