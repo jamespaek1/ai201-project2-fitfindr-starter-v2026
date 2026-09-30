@@ -1,220 +1,119 @@
 #!/usr/bin/env python3
+"""Collect raw, uncached evidence for the five original criteria.
+
+The original runner handled only whole-agent queries. This version also runs
+criterion 4's direct fit-card call and criterion 5's five distinct search cases.
+It does not change the agent or decide subjective factual-grounding verdicts.
 """
-Run your scenarios repeatedly and write the results down. ← UNIT 4
-
-    python run_eval.py --label before      five tries, the default
-    python run_eval.py --label after       after your improvement
-    python run_eval.py --tries 10          more tries
-
-This does the mechanical half of unit 4 for you. It runs every scenario in
-`scenarios.py` five separate times, **with caching off** so you get five real
-answers, captures the trace and the session for each, and writes it all into
-`results/` in the table format the submission asks for.
-
-Five, because your criteria are written out of five — "4 of 5 tries", "5 of 5
-tries". One column per try means you count the passes and read the verdict
-straight off the row, with no arithmetic in between.
-
-⚠️ What it does NOT do is decide whether a try passed.
-
-That judgment is yours, and it has to be, because it depends on criteria you
-wrote. The Verdict column comes out blank and you fill it in from the output
-underneath. Deciding what counts as a pass is the lesson — a scorer handed to
-you would teach you nothing.
-
-**Two of your three tools call a model, so tries will legitimately differ.**
-That is expected here, unlike pair 1. If all five tries come back identical
-on a criterion that involves the fit card, check that you're really in test
-mode — caching is what usually explains it.
-"""
-
 import argparse
+from contextlib import redirect_stdout, redirect_stderr
 import datetime as dt
-import sys
+import hashlib
+import io
+import json
+import subprocess
+import time
 import traceback
 
 import config
-import scenarios as scenario_module
+import generate
+import scenarios
+import trace
 
 
-def run_once(scenario, use_trace=True):
-    """One scenario, one try. Returns everything worth recording."""
+def run_once(scenario, attempt):
     from agent import run_agent
-    from utils.data_loader import get_example_wardrobe, get_empty_wardrobe
-    import trace as trace_module
+    from mcp_client import call_tool
+    from tools import create_fit_card
+    from utils.data_loader import get_example_wardrobe, load_listings
 
-    wardrobe = (
-        get_empty_wardrobe() if scenario["wardrobe"] == "empty" else get_example_wardrobe()
-    )
-
-    if use_trace:
-        trace_module.start_trace()
-
-    record = {"error": None, "session": None, "trace": "", "crashed": None}
-    try:
-        record["session"] = run_agent(scenario["query"], wardrobe)
-    except Exception as exc:  # noqa: BLE001 — a crash is a result worth logging
-        record["crashed"] = f"{type(exc).__name__}: {exc}"
-        record["traceback"] = traceback.format_exc()
-
-    if use_trace:
-        record["trace"] = trace_module.get_trace()
-
+    record = {"started_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+              "attempt": attempt, "session": None, "output": None,
+              "inputs": None, "error": None, "crashed": None}
+    calls = generate.call_count()
+    tokens = generate.token_counts()
+    started = time.monotonic()
+    capture = io.StringIO()
+    with redirect_stdout(capture), redirect_stderr(capture):
+        trace.start_trace()
+        try:
+            if scenario["kind"] == "agent":
+                record["inputs"] = {"query": scenario["query"], "wardrobe": get_example_wardrobe()}
+                record["session"] = run_agent(**record["inputs"])
+                record["error"] = record["session"]["error"]
+            elif scenario["kind"] == "fit_card":
+                item = next(x for x in load_listings() if x["id"] == scenario["item_id"])
+                record["inputs"] = {"outfit": scenario["outfit"], "new_item": item}
+                record["output"] = create_fit_card(**record["inputs"])
+                trace.step("create_fit_card (direct criterion 4)", inputs=record["inputs"],
+                           returned=record["output"], full=True)
+            else:
+                case = scenario["cases"][(attempt - 1) % len(scenario["cases"])]
+                record["inputs"] = {k: v for k, v in case.items() if k != "expected"}
+                record["expected_id"] = case["expected"]
+                record["output"] = call_tool("search_listings", record["inputs"])
+                trace.step("search_listings (via MCP; criterion 5)", inputs=record["inputs"],
+                           returned=record["output"], full=True)
+        except Exception as exc:
+            record["crashed"] = f"{type(exc).__name__}: {exc}"
+            record["traceback"] = traceback.format_exc()
+        record["trace"] = trace.get_trace()
+    record["console"] = capture.getvalue()
+    record["model_calls"] = generate.call_count() - calls
+    record["tokens"] = {k: v - tokens[k] for k, v in generate.token_counts().items()}
+    record["duration_seconds"] = round(time.monotonic() - started, 3)
     return record
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Run the scenarios and log the results.")
-    parser.add_argument("--tries", "--trials", type=int, default=5, dest="tries",
-                        help="tries per scenario (default 5, matching your criteria)")
-    parser.add_argument("--label", default="", help="a name for this run, e.g. 'before'")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--label", required=True)
+    parser.add_argument("--tries", type=int, default=5)
     args = parser.parse_args()
-
-    problems = scenario_module.validate()
-    if problems:
-        print("scenarios.py has problems:\n", file=sys.stderr)
-        for problem in problems:
-            print(f"  - {problem}", file=sys.stderr)
-        sys.exit(1)
-
-    if not scenario_module.SCENARIOS:
-        print("scenarios.py is empty. Milestone 3 starts by filling it in.", file=sys.stderr)
-        sys.exit(1)
-
-    if args.tries < 5:
-        print(f"⚠️  {args.tries} tries. Your criteria are written out of five.\n")
-
-    # Caching off. Five tries have to be five real answers.
+    if args.tries != 5:
+        parser.error("These original criteria specify exactly five tries/cases.")
+    if scenarios.validate():
+        parser.error("; ".join(scenarios.validate()))
     config.CACHE_ENABLED = False
-    print("Cache is OFF for this run — that's deliberate.\n")
-
-    rows = []
-    for scenario in scenario_module.SCENARIOS:
-        print(f"{scenario['name']}  ({scenario['wardrobe']} wardrobe)")
-        print(f"  query: {scenario['query']}")
-
-        tries = []
-        for attempt in range(1, args.tries + 1):
-            record = run_once(scenario)
-            tries.append(record)
-
-            if record["crashed"]:
-                print(f"  try {attempt}: CRASHED — {record['crashed']}")
-            else:
-                session = record["session"] or {}
-                if session.get("error"):
-                    print(f"  try {attempt}: stopped early — {str(session['error'])[:60]}")
-                else:
-                    card = (session.get("fit_card") or "")
-                    print(f"  try {attempt}: completed — fit card {len(card)} chars")
-
-        rows.append({"scenario": scenario, "tries": tries})
-        print()
-
-    write_report(rows, args)
-
-
-def write_report(rows, args):
+    if not args.label.replace("_", "").replace("-", "").isalnum():
+        parser.error("Use a simple label, such as before or after.")
+    path = config.RESULTS_DIR / f"unit4_{args.label}.json"
+    if path.exists():
+        parser.error(f"Refusing to overwrite prior evidence: {path.name}")
+    source_files = ["criteria.md", "agent.py", "tools.py", "config.py", "generate.py",
+                    "mcp_server.py", "mcp_client.py", "scenarios.py", "run_eval.py", "trace.py"]
+    report = {
+        "label": args.label, "started_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
+        "source_sha256": {p: hashlib.sha256((config.ROOT / p).read_bytes()).hexdigest() for p in source_files},
+        "model": config.MODEL, "temperature": config.TEMPERATURE, "cache_enabled": False,
+        "tries": 5, "criterion_5_note": "Five original distinct cases, once each in their original order.",
+        "rows": [],
+    }
     config.RESULTS_DIR.mkdir(exist_ok=True)
-    stamp = dt.datetime.now().strftime("%Y-%m-%d_%H%M")
-    label = f"_{args.label}" if args.label else ""
-    path = config.RESULTS_DIR / f"run_{stamp}{label}.md"
-
-    n = args.tries
-    headers = " | ".join(f"Try {i}" for i in range(1, n + 1))
-    divider = "|".join(["---"] * n)
-
-    lines = [
-        f"# Run log{f' — {args.label}' if args.label else ''}",
-        "",
-        "- Produced by: `run_eval.py::main`",
-        "- Loop: `agent.py::run_agent` · tools: `tools.py`",
-        f"- Tries per scenario: {n}, caching off",
-        f"- Temperature: {config.TEMPERATURE}",
-        f"- When: {dt.datetime.now().strftime('%Y-%m-%d %H:%M')}",
-        "",
-        "Paste the table below into your README. Fill in the Criterion and",
-        "Target columns from `criteria.md`, then mark each try PASS or FAIL",
-        "from the output underneath and count them for the Verdict.",
-        "",
-        f"| Criterion | Target | {headers} | Verdict |",
-        f"|---|---|{divider}|---|",
-    ]
-
-    for row in rows:
-        scenario = row["scenario"]
-        number = scenario.get("criterion")
-        # A scenario with "criterion": None is a diagnostic run, not one of
-        # your five. It's marked so you don't paste an unnumbered row into a
-        # table the README asks you to number 1-5.
-        label_text = (
-            f"{number}. {scenario['name']}"
-            if number
-            else f"{scenario['name']} _(diagnostic — not one of your five)_"
-        )
-        lines.append(f"| {label_text} |  | {' | '.join([' '] * n)} |  |")
-
-    lines += [
-        "",
-        "> The Try and Verdict columns are blank on purpose. Whether a try",
-        "> passed depends on the criterion you wrote, so it's yours to decide.",
-        "> Count the passes, then read that count against your target: a row",
-        "> targeting 4 of 5 with three PASS cells is MISSED (3/5).",
-        "",
-        "---",
-        "",
-        "## What actually happened",
-        "",
-        "Real output, as text. Paste the relevant parts into your README —",
-        "the rubric asks for output, not a description of it.",
-        "",
-    ]
-
-    for row in rows:
-        scenario = row["scenario"]
-        lines += [f"### {scenario['name']}", "",
-                  f"- Query: `{scenario['query']}`",
-                  f"- Wardrobe: {scenario['wardrobe']}", ""]
-
-        for i, record in enumerate(row["tries"], 1):
-            lines.append(f"**Try {i}**")
-            lines.append("")
-
-            if record["crashed"]:
-                lines += ["Crashed:", "", "```", record["crashed"], "```", ""]
-                continue
-
-            session = record["session"] or {}
-            item = session.get("selected_item") or {}
-            lines += [
-                f"- stopped early: {'yes — ' + str(session.get('error')) if session.get('error') else 'no'}",
-                f"- selected_item: {item.get('title', '(none)')}"
-                + (f" (${item.get('price')}, {item.get('platform')})" if item else ""),
-                f"- search_results: {len(session.get('search_results') or [])}",
-                "",
-            ]
-            if session.get("outfit_suggestion"):
-                lines += ["Outfit suggestion:", "", "```",
-                          str(session["outfit_suggestion"]), "```", ""]
-            if session.get("fit_card"):
-                lines += ["Fit card:", "", "```", str(session["fit_card"]), "```", ""]
-            if record["trace"]:
-                lines += ["Trace:", "", "```", record["trace"], "```", ""]
-
-    path.write_text("\n".join(lines), encoding="utf-8")
-
-    import generate
-
-    print(f"Wrote {path.relative_to(config.ROOT)}")
-    print(generate.usage())
-    print("\nCommit this file. It's the evidence the test actually happened.")
-
-    if not any(r["tries"][0]["trace"] for r in rows):
-        print(
-            "\nNote: no trace was captured. You haven't added trace.step() calls\n"
-            "to run_agent() yet — that's Milestone 2, and the trace is required\n"
-            "evidence worth a point."
-        )
+    print(f"{args.label}: cache OFF; {config.MODEL}; temperature {config.TEMPERATURE}", flush=True)
+    for scenario in scenarios.SCENARIOS:
+        row = {"scenario": scenario, "tries": []}
+        report["rows"].append(row)
+        for attempt in range(1, 6):
+            record = run_once(scenario, attempt)
+            row["tries"].append(record)
+            path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+            status = record["crashed"] or record["error"] or "completed (unscored)"
+            print(f"C{scenario['criterion']} try {attempt}: {status}; {record['model_calls']} model calls", flush=True)
+    report["finished_at"] = dt.datetime.now(dt.timezone.utc).isoformat()
+    report["usage"] = generate.usage()
+    path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    lines = [f"# Raw run evidence — {args.label}", "", f"Source: `{path.name}`; cache OFF.", ""]
+    for row in report["rows"]:
+        lines += [f"## {row['scenario']['criterion']}. {row['scenario']['name']}", ""]
+        for record in row["tries"]:
+            lines += [f"### Try {record['attempt']}", "",
+                      f"Actual provider calls: {record['model_calls']}", "",
+                      "```json", json.dumps({k: record[k] for k in ["inputs", "output", "session", "error", "crashed"]},
+                                           ensure_ascii=False, indent=2), "```", ""]
+    path.with_suffix(".md").write_text("\n".join(lines), encoding="utf-8")
+    print(f"Saved {path.name} and {path.with_suffix('.md').name}; {generate.usage()}", flush=True)
 
 
 if __name__ == "__main__":

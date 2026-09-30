@@ -1,66 +1,36 @@
-"""
-The runs your test needs. ← UNIT 4, MILESTONE 3
+"""Exact scenarios from the unchanged Unit 3 criteria, not looser substitutes."""
 
-Each of your five criteria needs something run against it. A criterion about
-the empty-search branch needs an impossible query. One about the fit card needs
-the same item run more than once. Working that out is Milestone 3's first step,
-and this file is where you write it down.
-
-`run_eval.py` runs everything here five times and writes the run log — five
-because your criteria are written out of five.
-
-Three scenarios are filled in to show the shape. Add or change whatever your
-own criteria need — these are a starting point, not a fixed set.
-"""
-
+MATCHING_QUERY = "vintage graphic tee under $30, size M"
+FIXED_OUTFIT = (
+    "Pair the butterfly tee with dark-wash baggy jeans and "
+    "chunky white sneakers for a playful Y2K look."
+)
+SIZE_CASES = [
+    {"description": "graphic tee", "size": "M", "max_price": 18.0, "expected": "lst_002"},
+    {"description": "flannel", "size": "XL", "max_price": 22.0, "expected": "lst_003"},
+    {"description": "jeans", "size": "W30", "max_price": 38.0, "expected": "lst_001"},
+    {"description": "track jacket", "size": "M", "max_price": 45.0, "expected": "lst_004"},
+    {"description": "graphic tee", "size": "L", "max_price": 24.0, "expected": "lst_006"},
+]
 SCENARIOS = [
-    {
-        # A query the data can match. Criterion 1.
-        "name": "matching query completes",
-        "query": "vintage graphic tee under $30",
-        "wardrobe": "example",
-        "criterion": 1,
-    },
-    {
-        # A query nothing can match. Criterion 2 — the branch.
-        "name": "impossible query stops early",
-        "query": "designer ballgown size XXS under $5",
-        "wardrobe": "example",
-        "criterion": 2,
-    },
-    {
-        # A user with nothing saved. One of unit 4's three failure modes.
-        "name": "empty wardrobe",
-        "query": "denim jacket under $50",
-        "wardrobe": "empty",
-        "criterion": None,
-    },
-    # TODO: add what your criteria 3, 4 and 5 need.
-    #
-    # Set "criterion" to the number in criteria.md that the scenario tests.
-    # "criterion": None means a diagnostic run — useful to have, but it isn't
-    # one of your five, and run_eval.py marks it as such in the table.
-    #
-    # For a state criterion, any normal query works — what you're checking is
-    # what ends up in the session, not what the user typed.
-    #
-    # For a fit-card criterion, you probably want the SAME query listed more
-    # than once, or several different items, depending on what your criterion
-    # actually says.
+    {"name": "Matching query completes all three tools", "criterion": 1, "target": 4,
+     "kind": "agent", "query": MATCHING_QUERY},
+    {"name": "Impossible query stops before tool 2", "criterion": 2, "target": 5,
+     "kind": "agent", "query": "designer ballgown size XXS under $5"},
+    {"name": "Selected item reaches both later tools unchanged", "criterion": 3, "target": 5,
+     "kind": "agent", "query": MATCHING_QUERY},
+    {"name": "Fit card is concise and grounded", "criterion": 4, "target": 4,
+     "kind": "fit_card", "item_id": "lst_002", "outfit": FIXED_OUTFIT},
+    {"name": "Size and budget survive ranking", "criterion": 5, "target": 5,
+     "kind": "search_cases", "cases": SIZE_CASES},
 ]
 
-WARDROBES = ("example", "empty")
 
-
-def validate() -> list[str]:
-    """Complain about anything malformed, before a long run rather than during."""
+def validate():
     problems = []
-    for i, scenario in enumerate(SCENARIOS, 1):
-        if not scenario.get("query", "").strip():
-            problems.append(f"scenario {i} has no query")
-        if scenario.get("wardrobe") not in WARDROBES:
-            problems.append(
-                f"scenario {i} has wardrobe {scenario.get('wardrobe')!r} — "
-                f"it should be one of {WARDROBES}"
-            )
+    if [s["criterion"] for s in SCENARIOS] != [1, 2, 3, 4, 5]:
+        problems.append("Scenarios must cover original criteria 1–5, in order.")
+    for scenario in SCENARIOS:
+        if scenario["kind"] == "agent" and not scenario.get("query"):
+            problems.append("An agent scenario needs a query.")
     return problems
