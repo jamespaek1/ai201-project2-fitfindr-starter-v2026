@@ -1,0 +1,30 @@
+test_happy_path_preserves_actual_inputs_and_call_order (test_agent.LoopTests.test_happy_path_preserves_actual_inputs_and_call_order) ... ok
+test_invalid_query_never_calls_search (test_agent.LoopTests.test_invalid_query_never_calls_search) ... ok
+test_iteration_guard_stops_before_second_call (test_agent.LoopTests.test_iteration_guard_stops_before_second_call) ... ok
+test_provider_failure_preserves_search_and_stops (test_agent.LoopTests.test_provider_failure_preserves_search_and_stops) ... ok
+test_real_empty_search_does_not_call_later_tools (test_agent.LoopTests.test_real_empty_search_does_not_call_later_tools) ... ok
+test_sessions_do_not_share_user_mutable_state (test_agent.LoopTests.test_sessions_do_not_share_user_mutable_state) ... ok
+test_malformed_constraints_do_not_broaden_the_search (test_agent.ParsingTests.test_malformed_constraints_do_not_broaden_the_search) ... ok
+test_optional_filters_are_none (test_agent.ParsingTests.test_optional_filters_are_none) ... ok
+test_price_and_size_are_separate_from_description (test_agent.ParsingTests.test_price_and_size_are_separate_from_description) ... ok
+test_original_search_cases_rotate_by_attempt (test_eval.EvidenceCollectionTests.test_original_search_cases_rotate_by_attempt) ... ok
+test_repeated_empty_queries_survive_log_capture (test_eval.EvidenceCollectionTests.test_repeated_empty_queries_survive_log_capture) ... ok
+test_invalid_budget_is_a_readable_protocol_error (test_mcp.MCPIntegrationTests.test_invalid_budget_is_a_readable_protocol_error) ... ok
+test_round_trip_preserves_full_records_and_empty_list (test_mcp.MCPIntegrationTests.test_round_trip_preserves_full_records_and_empty_list) ... ok
+test_caption_receives_item_outfit_and_exact_price (test_tools.PromptTests.test_caption_receives_item_outfit_and_exact_price) ... ok
+test_empty_input_guards_do_not_call_model (test_tools.PromptTests.test_empty_input_guards_do_not_call_model) ... ok
+test_empty_model_output_is_not_success (test_tools.PromptTests.test_empty_model_output_is_not_success) ... ok
+test_empty_wardrobe_still_calls_model_for_general_advice (test_tools.PromptTests.test_empty_wardrobe_still_calls_model_for_general_advice) ... ok
+test_real_wardrobe_and_null_brand_are_preserved (test_tools.PromptTests.test_real_wardrobe_and_null_brand_are_preserved) ... ok
+test_empty_and_impossible_searches (test_tools.SearchTests.test_empty_and_impossible_searches) ... ok
+test_nonfinite_and_negative_prices_are_rejected (test_tools.SearchTests.test_nonfinite_and_negative_prices_are_rejected) ... ok
+test_one_size_is_not_an_apparel_wildcard (test_tools.SearchTests.test_one_size_is_not_an_apparel_wildcard) ... ok
+test_real_listing_at_price_ceiling_and_split_size (test_tools.SearchTests.test_real_listing_at_price_ceiling_and_split_size) ... ok
+test_repeatable_ranking_and_limit (test_tools.SearchTests.test_repeatable_ranking_and_limit) ... ok
+test_shoe_and_waist_sizes (test_tools.SearchTests.test_shoe_and_waist_sizes) ... ok
+test_size_labels_do_not_match_substrings (test_tools.SearchTests.test_size_labels_do_not_match_substrings) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 2.248s
+
+OK
