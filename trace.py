@@ -26,19 +26,22 @@ in the step name — `search_listings (via MCP)` is enough.
 """
 
 import config
+import json
 
 _lines: list[str] = []
 _step_number = 0
+_active = False
 
 
 def start_trace() -> None:
     """Clear the trace. Call this at the start of each run."""
-    global _step_number
+    global _step_number, _active
+    _active = True
     _lines.clear()
     _step_number = 0
 
 
-def step(name: str, inputs=None, returned=None, note: str = "") -> None:
+def step(name: str, inputs=None, returned=None, note: str = "", full: bool = False) -> None:
     """
     Record one step of the loop.
 
@@ -50,13 +53,17 @@ def step(name: str, inputs=None, returned=None, note: str = "") -> None:
         note:     an optional word on why, e.g. "branch: empty, stopping".
     """
     global _step_number
+    if not _active:
+        return
     _step_number += 1
+
+    show = (lambda value: json.dumps(value, ensure_ascii=False, indent=2)) if full else _short
 
     line = f"[{_step_number}] {name}"
     if inputs is not None:
-        line += f"\n      in:  {_short(inputs)}"
+        line += f"\n      in:  {show(inputs)}"
     if returned is not None:
-        line += f"\n      out: {_short(returned)}"
+        line += f"\n      out: {show(returned)}"
     if note:
         line += f"\n      →    {note}"
 

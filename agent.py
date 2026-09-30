@@ -64,9 +64,17 @@ def new_session(query: str, wardrobe: dict) -> dict:
 
 def _call(session: dict, function, **inputs):
     entry = {"tool": function.__name__, "inputs": deepcopy(inputs)}
+    entry["transport"] = "MCP/stdio" if function.__name__ == "search_listings" else "direct"
     session["tool_calls"].append(entry)
-    result = function(**inputs)
+    step_name = function.__name__ + (" (via MCP)" if entry["transport"] == "MCP/stdio" else "")
+    try:
+        result = function(**inputs)
+    except Exception as exc:
+        entry["error"] = str(exc)
+        trace.step(step_name, inputs=inputs, note=f"failed: {exc}", full=True)
+        raise
     entry["returned"] = deepcopy(result)
+    trace.step(step_name, inputs=inputs, returned=result, full=True)
     return result
 
 
@@ -75,6 +83,7 @@ def run_agent(query: str, wardrobe: dict) -> dict:
     session = new_session(query, wardrobe)
     try:
         session["parsed"] = parse_query(session["query"])
+        trace.step("parse_query", inputs=query, returned=session["parsed"], full=True)
     except ValueError as exc:
         session["error"] = str(exc)
         return session
@@ -95,8 +104,10 @@ def run_agent(query: str, wardrobe: dict) -> dict:
                         f"max price: {parsed['max_price'] if parsed['max_price'] is not None else 'none'}). "
                         "Try broader keywords, another size, or a higher budget."
                     )
+                    trace.step("stop", note="branch: empty search; " + session["error"])
                     break
                 session["selected_item"] = session["search_results"][0]
+                trace.step("select first ranked result", returned=session["selected_item"], full=True)
             elif session["outfit_suggestion"] is None:
                 session["outfit_suggestion"] = _call(
                     session, suggest_outfit,
@@ -112,6 +123,9 @@ def run_agent(query: str, wardrobe: dict) -> dict:
                     session["error"] = "No fit card was returned. Try the request again."
         except (ModelUnavailable, MCPError) as exc:
             session["error"] = str(exc)
+            trace.step("stop", note="tool failure; " + session["error"])
+    if session["fit_card"] is not None:
+        trace.step("finish", note="All three tools completed; fit card saved in session.")
     return session
 
 
