@@ -33,7 +33,7 @@ not a live marketplace search or a purchase service.
 - **What it does:** Load the supplied listings through `utils.data_loader.load_listings`, filter size and inclusive price ceiling, and rank by distinct keyword matches.
 - **Inputs:** `description: str`, `size: str | None = None`, `max_price: float | None = None`.
 - **Returns:** Up to `config.SEARCH_RESULT_LIMIT` original listing dicts, each containing `id`, `title`, `description`, `category`, `style_tags: list[str]`, `size`, `condition`, numeric `price`, `colors: list[str]`, nullable `brand`, and `platform`. Case-insensitive word tokens are matched against title, description, category, tags, colors, and non-null brand. Each distinct overlapping keyword counts once; zero-score records are dropped, descending score wins, and ID breaks ties. Common request filler is ignored; a small explicit plural map normalizes tees, jackets, shirts, shoes, sneakers, boots, dresses, and bags. This is lexical matching, not semantic search; partial keyword overlap can return a related item.
-- **When it has nothing:** Return `[]`, including a blank/filler-only description. Invalid negative or non-finite prices raise `ValueError` rather than silently removing the budget.
+- **When it has nothing:** Return `[]`, meaning no listing matches the requested keywords and filters, including a blank/filler-only description. Tell the user to broaden the `description` keywords, change or omit `size`, or increase `max_price`, then search again with their revised request. Invalid negative or non-finite prices raise `ValueError` rather than silently removing the budget.
 
 Size matching is case-insensitive and compares complete labels: `M` matches
 `S/M` and `M/L`, while `L` does not match `XL` and `S` does not match `US 9`.

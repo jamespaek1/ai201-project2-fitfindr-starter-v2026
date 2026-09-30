@@ -11,8 +11,11 @@ def search_listings(description: str, size: str | None = None,
                     max_price: float | None = None) -> list[dict]:
     """Search mock thrift listings by keywords, optional complete size label and
     inclusive maximum price in US dollars; return ranked listing objects, or []
-    when nothing matches. Decimal prices are allowed; negative or nonfinite
-    budgets are rejected. This searches supplied data, not live inventory.
+    when no listing matches the requested keywords and filters. If the result
+    is [], tell the user to try broader keywords in description, change or omit
+    size, or increase max_price, then search again with their revised request.
+    Decimal prices are allowed; negative or nonfinite budgets are rejected.
+    This searches supplied data, not live inventory.
     """
     return _search_listings_impl(description, size, max_price)
 

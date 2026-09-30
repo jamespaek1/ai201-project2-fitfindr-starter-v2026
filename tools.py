@@ -40,7 +40,12 @@ def _size_matches(requested: str, available: str) -> bool:
 
 def search_listings(description: str, size: str | None = None,
                     max_price: float | None = None) -> list[dict]:
-    """Return ranked listing dicts; no matches is always [], never None."""
+    """Return ranked listing dicts matching keywords, size and a price ceiling.
+
+    No matches returns [], never None. The caller can tell the user to broaden
+    description keywords, change or omit size, or raise max_price, then search
+    again using the user's revised request.
+    """
     if max_price is not None and (not math.isfinite(max_price) or max_price < 0):
         raise ValueError("max_price must be a finite, non-negative number.")
     keywords = _tokens(description)
