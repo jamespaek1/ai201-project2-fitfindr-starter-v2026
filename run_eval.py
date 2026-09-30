@@ -9,10 +9,10 @@ import argparse
 from contextlib import redirect_stdout, redirect_stderr
 import datetime as dt
 import hashlib
-import io
 import json
 import subprocess
 import time
+import tempfile
 import traceback
 
 import config
@@ -33,8 +33,9 @@ def run_once(scenario, attempt):
     calls = generate.call_count()
     tokens = generate.token_counts()
     started = time.monotonic()
-    capture = io.StringIO()
-    with redirect_stdout(capture), redirect_stderr(capture):
+    # MCP's stdio subprocess requires stderr.fileno(); StringIO breaks it.
+    # Capture to a real temporary file, then preserve that text in the record.
+    with tempfile.TemporaryFile(mode="w+", encoding="utf-8") as capture, redirect_stdout(capture), redirect_stderr(capture):
         trace.start_trace()
         try:
             if scenario["kind"] == "agent":
@@ -58,7 +59,9 @@ def run_once(scenario, attempt):
             record["crashed"] = f"{type(exc).__name__}: {exc}"
             record["traceback"] = traceback.format_exc()
         record["trace"] = trace.get_trace()
-    record["console"] = capture.getvalue()
+        capture.flush()
+        capture.seek(0)
+        record["console"] = capture.read()
     record["model_calls"] = generate.call_count() - calls
     record["tokens"] = {k: v - tokens[k] for k, v in generate.token_counts().items()}
     record["duration_seconds"] = round(time.monotonic() - started, 3)
